@@ -13,6 +13,8 @@ jobs:
     strategy:
       fail-fast: true
     runs-on: ubuntu-latest
+    env:
+      TOOLS_PATH: "/opt/tools/bin"
     steps:
       - name: Set up Go release
         uses: percona-platform/setup-go@v2
@@ -22,11 +24,13 @@ jobs:
 
       - name: Install tools
         run: |
+          mkdir -p $TOOLS_PATH
+          echo $TOOLS_PATH >> $GITHUB_PATH
           curl -LO https://dl.k8s.io/release/v$KUBECTL_VERSION/bin/linux/amd64/kubectl
           curl -LO "https://dl.k8s.io/v$KUBECTL_VERSION/bin/linux/amd64/kubectl.sha256"
           echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
           chmod +x kubectl
-          cp kubectl "$GITHUB_PATH"
+          cp kubectl "$TOOLS_PATH"
           rm kubectl
         env:
           KUBECTL_VERSION: 1.23.6
@@ -39,6 +43,8 @@ jobs:
     strategy:
       fail-fast: true
     runs-on: ubuntu-latest
+    env:
+      TOOLS_PATH: "/opt/tools/bin"
     steps:
       - name: Set up Go release
         uses: percona-platform/setup-go@v2
@@ -48,21 +54,23 @@ jobs:
 
       - name: Install tools
         run: |
+          mkdir -p $TOOLS_PATH
+          echo $TOOLS_PATH >> $GITHUB_PATH
           # Kubectl
           curl -LO https://dl.k8s.io/release/v$KUBECTL_VERSION/bin/linux/amd64/kubectl
           curl -LO "https://dl.k8s.io/v$KUBECTL_VERSION/bin/linux/amd64/kubectl.sha256"
           echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
           chmod +x kubectl
-          cp kubectl "$GITHUB_PATH"
+          cp kubectl "$TOOLS_PATH"
           rm kubectl
           # Kind
           curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.17.0/kind-linux-amd64
           chmod +x ./kind
-          mv ./kind "$GITHUB_PATH"
+          mv ./kind "$TOOLS_PATH"
           # Kuttl
           curl -Lo ./kuttl https://github.com/kudobuilder/kuttl/releases/download/v0.14.0/kubectl-kuttl_0.14.0_linux_x86_64
           chmod +x ./kuttl
-          mv ./kuttl "$GITHUB_PATH"
+          mv ./kuttl "$TOOLS_PATH"
         env:
           KUBECTL_VERSION: 1.23.6
       - name: Run tests

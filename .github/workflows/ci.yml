@@ -68,9 +68,9 @@ jobs:
           chmod +x ./kind
           mv ./kind "$TOOLS_PATH"
           # Kuttl
-          curl -Lo ./kuttl https://github.com/kudobuilder/kuttl/releases/download/v0.14.0/kubectl-kuttl_0.14.0_linux_x86_64
-          chmod +x ./kuttl
-          mv ./kuttl "$TOOLS_PATH"
+          curl -Lo ./kubectl-kuttl https://github.com/kudobuilder/kuttl/releases/download/v0.14.0/kubectl-kuttl_0.14.0_linux_x86_64
+          chmod +x ./kubectl-kuttl
+          mv ./kubectl-kuttl "$TOOLS_PATH"
         env:
           KUBECTL_VERSION: 1.23.6
       - name: Run tests

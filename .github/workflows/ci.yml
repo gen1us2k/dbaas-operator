@@ -37,6 +37,8 @@ jobs:
       - name: Run tests
         run:
           make test
+        env:
+          PXC_OPERATOR_VERSION: 1.11.0
   kind-e2e-tests:
     name: E2E tests (Kind)
     timeout-minutes: 30
@@ -76,3 +78,5 @@ jobs:
       - name: Run tests
         run:
           kubectl kuttl test --start-kind --config ./e2e-tests/kuttl.yml
+        env:
+          PXC_OPERATOR_VERSION: 1.11.0

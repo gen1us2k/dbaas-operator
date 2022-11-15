@@ -132,14 +132,33 @@ jobs:
           kind create cluster --config ./e2e-tests/kind.yml
           ./bin/managed &
 
-      - name: Clone imdb dataset
+      - name: Hoffman test
         run: |
           mkdir /tmp/repos
-          cd /tmp/repos
-          git clone --depth 1 https://github.com/dlwhittenbury/MySQL_IMDb_Project imdb
-          cd imdb
+          git clone --depth 1 https://github.com/dlwhittenbury/MySQL_IMDb_Project /tmp/repos/imdb
           kubectl apply -f ./e2e-tests/imdb/client.yml
+          kubectl apply -f https://raw.githubusercontent.com/percona/percona-xtradb-cluster-operator/v${PXC_OPERATOR_VERSION}/deploy/bundle.yaml -n "${NAMESPACE}"
           kubectl apply -f ./e2e-tests/imdb/pxc.yml
           kubectl wait --for=condition=Ready pxc/single-node
+          root_password=$(kubectl get secret pxc-sample-secrets -o jsonpath='{.data.root}'|base64 --decode)
+          host=$(kubectl get db -o jsonpath='{.items[0].status.host}')
+          cd /tmp/repos/imdb
+          mkdir ./imdb_data && cd ./imdb_data
+          # Download data
+          wget https://datasets.imdbws.com/name.basics.tsv.gz
+          wget https://datasets.imdbws.com/title.akas.tsv.gz
+          wget https://datasets.imdbws.com/title.basics.tsv.gz
+          wget https://datasets.imdbws.com/title.crew.tsv.gz
+          wget https://datasets.imdbws.com/title.episode.tsv.gz
+          wget https://datasets.imdbws.com/title.principals.tsv.gz
+          wget https://datasets.imdbws.com/title.ratings.tsv.gz
+          cd ..
+          python imdb_converter.py
+
+          kubectl exec -ti mysql-client -- mysql -uroot -p$root_password -h $host < /tmp/imdb/imdb-create-tables.sql
+          kubectl exec -ti mysql-client -- mysql -uroot -p$root_password -h $host < /tmp/imdb/imdb-load-data.sql
+
+        env:
+          PXC_OPERATOR_VERSION: 1.11.0
 
 

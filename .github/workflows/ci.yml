@@ -130,10 +130,10 @@ jobs:
       - name: Create kind cluster
         run: |
           kind create cluster --config ./e2e-tests/kind.yml
-          ./bin/managed &
 
       - name: Hoffman test
         run: |
+          ./bin/managed &
           mkdir /tmp/repos
           git clone --depth 1 https://github.com/dlwhittenbury/MySQL_IMDb_Project /tmp/repos/imdb
           kubectl apply -f ./e2e-tests/imdb/client.yml
@@ -142,7 +142,7 @@ jobs:
           kubectl apply -f ./e2e-tests/imdb/pxc.yml
           kubectl wait --for=condition=Ready pxc/single-node
           root_password=$(kubectl get secret pxc-sample-secrets -o jsonpath='{.data.root}'|base64 --decode)
-          host=$(kubectl get db -o jsonpath='{.items[0].status.host}')
+          host=$(kubectl get db/single-node -o jsonpath='{.items[0].status.host}')
           cd /tmp/repos/imdb
           mkdir ./imdb_data && cd ./imdb_data
           # Download data

@@ -133,7 +133,7 @@ jobs:
 
       - name: Hoffman test
         run: |
-          ./bin/managed &
+          ./bin/manager &
           mkdir /tmp/repos
           git clone --depth 1 https://github.com/dlwhittenbury/MySQL_IMDb_Project /tmp/repos/imdb
           kubectl apply -f ./e2e-tests/imdb/client.yml

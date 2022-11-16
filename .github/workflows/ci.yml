@@ -142,7 +142,7 @@ jobs:
           kubectl apply -f ./e2e-tests/imdb/client.yml
           kubectl apply -f ./e2e-tests/imdb/pxc.yml
           sleep 10
-          kubectl wait --for condition=Ready pxc/single-node --timeout=240
+          kubectl wait --for condition=Ready pxc/single-node --timeout=240s
           cd /tmp/repos/imdb
           mkdir ./imdb_data && cd ./imdb_data
           # Download data

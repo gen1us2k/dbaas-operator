@@ -141,9 +141,7 @@ jobs:
           git clone --depth 1 https://github.com/dlwhittenbury/MySQL_IMDb_Project /tmp/repos/imdb
           kubectl apply -f ./e2e-tests/imdb/client.yml
           kubectl apply -f ./e2e-tests/imdb/pxc.yml
-          kubectl wait --for=condition=Ready pxc/single-node
-          root_password=$(kubectl get secret pxc-sample-secrets -o jsonpath='{.data.root}'|base64 --decode)
-          host=$(kubectl get db/single-node -o jsonpath='{.items[0].status.host}')
+          kubectl wait --for condition=Ready pxc/single-node
           cd /tmp/repos/imdb
           mkdir ./imdb_data && cd ./imdb_data
           # Download data
@@ -158,6 +156,8 @@ jobs:
           pip install pandas numpy
           python imdb_converter.py
 
+          root_password=$(kubectl get secret pxc-sample-secrets -o jsonpath='{.data.root}'|base64 --decode)
+          host=$(kubectl get db/single-node -o jsonpath='{.items[0].status.host}')
           kubectl exec -ti mysql-client -- mysql -uroot -p$root_password -h $host < /tmp/imdb/imdb-create-tables.sql
           kubectl exec -ti mysql-client -- mysql -uroot -p$root_password -h $host < /tmp/imdb/imdb-load-data.sql
 

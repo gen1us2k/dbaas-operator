@@ -163,5 +163,8 @@ jobs:
 
         env:
           PXC_OPERATOR_VERSION: 1.11.0
+      - name: Cleanup
+        run: |
+          kind delete cluster
 
 

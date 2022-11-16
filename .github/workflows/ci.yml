@@ -133,12 +133,13 @@ jobs:
 
       - name: Hoffman test
         run: |
+          kubectl apply -f https://raw.githubusercontent.com/percona/percona-xtradb-cluster-operator/v${PXC_OPERATOR_VERSION}/deploy/bundle.yaml -n "${NAMESPACE}"
           kubectl apply -f ./config/crd/bases/dbaas.percona.com_databaseclusters.yaml
+          kubectl wait --for=contiditon=Ready deployment/percona-xtradb-cluster-operator
           ./bin/manager &
           mkdir /tmp/repos
           git clone --depth 1 https://github.com/dlwhittenbury/MySQL_IMDb_Project /tmp/repos/imdb
           kubectl apply -f ./e2e-tests/imdb/client.yml
-          kubectl apply -f https://raw.githubusercontent.com/percona/percona-xtradb-cluster-operator/v${PXC_OPERATOR_VERSION}/deploy/bundle.yaml -n "${NAMESPACE}"
           kubectl apply -f ./e2e-tests/imdb/pxc.yml
           kubectl wait --for=condition=Ready pxc/single-node
           root_password=$(kubectl get secret pxc-sample-secrets -o jsonpath='{.data.root}'|base64 --decode)

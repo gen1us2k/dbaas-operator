@@ -135,7 +135,7 @@ jobs:
         run: |
           kubectl apply -f https://raw.githubusercontent.com/percona/percona-xtradb-cluster-operator/v${PXC_OPERATOR_VERSION}/deploy/bundle.yaml -n "${NAMESPACE}"
           kubectl apply -f ./config/crd/bases/dbaas.percona.com_databaseclusters.yaml
-          kubectl wait --for=contiditon=Ready deployment/percona-xtradb-cluster-operator
+          kubectl wait --for=condition=Ready deployment/percona-xtradb-cluster-operator
           ./bin/manager &
           mkdir /tmp/repos
           git clone --depth 1 https://github.com/dlwhittenbury/MySQL_IMDb_Project /tmp/repos/imdb

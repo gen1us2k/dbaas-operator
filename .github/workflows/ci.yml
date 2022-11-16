@@ -142,7 +142,7 @@ jobs:
           kubectl apply -f ./e2e-tests/imdb/client.yml
           kubectl apply -f ./e2e-tests/imdb/pxc.yml
           sleep 10
-          kubectl wait --for condition=Ready pxc/single-node --timeout=860s
+          kubectl wait --for condition=Ready pxc/single-node --timeout=260s
           cd /tmp/repos/imdb
           mkdir ./imdb_data && cd ./imdb_data
           # Download data
@@ -166,6 +166,7 @@ jobs:
           PXC_OPERATOR_VERSION: 1.11.0
       - name: Cleanup
         run: |
+          kubectl get pods
           kind delete cluster
 
 

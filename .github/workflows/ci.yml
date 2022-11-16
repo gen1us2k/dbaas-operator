@@ -141,6 +141,7 @@ jobs:
           git clone --depth 1 https://github.com/dlwhittenbury/MySQL_IMDb_Project /tmp/repos/imdb
           kubectl apply -f ./e2e-tests/imdb/client.yml
           kubectl apply -f ./e2e-tests/imdb/pxc.yml
+          sleep 10
           kubectl wait --for condition=Ready pxc/single-node
           cd /tmp/repos/imdb
           mkdir ./imdb_data && cd ./imdb_data
